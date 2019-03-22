@@ -1,8 +1,6 @@
 
 # coding: utf-8
 
-# In[41]:
-
 
 import pandas as pd
 import numpy as np
@@ -13,8 +11,6 @@ import calendar
 import matplotlib.pyplot as plt
 from IPython.display import display
 
-
-# In[42]:
 
 
 ## parameters
@@ -44,17 +40,11 @@ df2['dow'] = weekNo
 df2.loc[df2['user_type'] == 'ZIPCAR', 'user_type'] = 'ZIP CAR' # clean acount names
 
 
-# In[44]:
-
-
 ## How many unique cards made transactions each month for each account
 
 uniqCard = df2.groupby(['user_type','month'])['card_number'].nunique()
 print(uniqCard)
 uniqCard.to_csv('uniqueCard.csv')
-
-
-# In[54]:
 
 
 ## How many transactions each cards made each month by account
@@ -64,16 +54,10 @@ print(transPerCard)
 transPerCard.to_csv('transPerCard.csv')
 
 
-# In[67]:
-
-
 ## How many transactions each cards made per month
 uses = df2.groupby(['card_number']).size().reset_index(name='count').sort_values(['count'],ascending=False)
 uses['count_perMonth'] = uses['count']/2
 uses.hist(column='count_perMonth',bins = 30)
-
-
-# In[66]:
 
 
 ## How many days each card was used per month
@@ -84,10 +68,7 @@ uses2.hist(column='exit_date_perMonth',bins = 30)
 #uses2.to_csv('usesByCard2.csv')
 
 
-# In[68]:
-
-
-# Cards with more than one entries within one day
+## Cards with more than one entries within one day
 
 use_daily = df2.groupby(['card_number','exit_date'])['exit_date'].size().reset_index(name='count')
 use_daily.to_csv('dailyUse.csv')
