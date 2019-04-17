@@ -1,9 +1,6 @@
 
 # coding: utf-8
 
-# In[2]:
-
-
 import os
 import pandas as pd
 import numpy as np
@@ -16,9 +13,6 @@ import calendar
 import matplotlib.pyplot as plt
 from pprint import pprint
 from IPython.display import display
-
-
-# In[4]:
 
 
 ## set parameters to modify the raw hourly occupancy data
@@ -50,9 +44,8 @@ def modify(df):
     df['season'] = np.where((df['month'] > 3) & (df['month'] < 11), 'summer','winter')
     df['fy'] = np.where(df['date'] < fy15, 'fy15', np.where((df['date'] < fy16) & (df['date'] >= fy15),'fy16',np.where((df['date'] < fy17) & (df['date'] >= fy16),'fy17','fy18')))
 
-
-# In[ ]:
-
+    
+## dataframes for Average Hourly Occupancy and Daily Peak Occupancy
 
 df_avgOcc = pd.DataFrame(columns=['totl','Contract','Transient','Validations','loct'])
 df_dailyPeak = pd.DataFrame(columns = ['Contract','Transient','Validations','date','fy','hr','loct','month','season','totl','weekday'])
@@ -79,14 +72,9 @@ for filename in sorted(glob('/userType/*.txt')):
         avgOcc['loct'] = basename
         df_avgOcc = df_avgOcc.append(avgOcc)
         
-        
         peakOcc = df.sort_values(['totl'], ascending=False).drop_duplicates(['date']).sort_values(['date'])
         peakOcc = peakOcc.drop(['time','weekNo'],axis = 1)
         df_dailyPeak = df_dailyPeak.append(peakOcc)
-
-
-# In[ ]:
-
 
 # Version 2, "system" dimension
 
@@ -112,22 +100,16 @@ for filename in sorted(glob('/syst/*.txt')):
         peakOcc = df.sort_values(['Transient'], ascending=False).drop_duplicates(['date']).sort_values(['date'])
         peakOcc = peakOcc.drop(['time','weekNo'],axis = 1)
         df_dailyPeak = df_dailyPeak.append(peakOcc)                              
+        
 
-
-# In[ ]:
-
-
-## potential type conversion
+## Potential type conversion
 
 cols = ['Contract', 'Transient', 'Validations','totl']
 df_dailyPeak[cols] = df_dailyPeak[cols].apply(pd.to_numeric, errors='coerce', axis=1)
 df_avgOcc[cols] = df_avgOcc[cols].apply(pd.to_numeric, errors='coerce', axis=1)
 
 
-# In[ ]:
-
-
-## export
+## Export
 
 df_avgOcc.to_csv('avgOcc.csv')
 df_dailyPeak.to_csv('dailyPeak.csv')
